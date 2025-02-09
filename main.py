@@ -10,7 +10,7 @@ HEADERS = {'accept-language': 'ru-RU,ru;q=0.9'}
 
 HYPER = ('Hyper', 'Bounty Adrenaline')
 TURBO = ('Turbo', 'Hot', 'Hotter', 'Fast', 'The Sprint')
-SLOW =  ('Titans', 'The Sunday Marathon')
+SLOW =  ('Titans', 'The Sunday Marathon', 'Marathon')
 
 
 def get_cursor() -> mysql.connector.connect().cursor:
