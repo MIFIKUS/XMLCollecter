@@ -101,7 +101,7 @@ while True:
                     break
             else:
                 speed = 'REG'
-            if 'Zoom' in name:
+            if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
                 continue
             if 'mystery' in name.lower() or 'Lotus' in name:
                 tournament_type = 'MYSTERY'
