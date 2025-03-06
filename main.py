@@ -127,7 +127,7 @@ while True:
             if not is_there_tournament(tournament_id):
                 add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date)
         print('Турниры кончились')
-        time.sleep(1800)
+        time.sleep(900)
     except Exception as e:
         time.sleep(10)
         print(e)
