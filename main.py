@@ -55,7 +55,7 @@ def fix_name(name: str) -> str:
     for _ in range(len(name)):
         if index + 1 <= len(name):
             if name[index] == ',':
-                if name[index+1] in ascii_letters or name[index+1] in digits:
+                if name[index+1] in ascii_letters:
                     new_name += ', '
                 else:
                     new_name += name[index]
@@ -135,7 +135,7 @@ while True:
                continue
            if 'mystery' in name.lower() or 'Lotus' in name:
                tournament_type = 'MYSTERY'
-           elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name:
+           elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name:
                tournament_type = 'KO'
            else:
                tournament_type = 'FREEZE'
