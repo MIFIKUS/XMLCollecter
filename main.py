@@ -58,10 +58,10 @@ def fix_name(name: str) -> str:
                 if name[index+1] in ascii_letters:
                     new_name += ', '
 
-                if name[index+1] in digits and name[index-1] not in digits:
+                elif name[index+1] in digits and name[index-1] not in digits:
                     new_name += ', '
 
-                if name[index-1] in digits and name[index+1] not in digits:
+                elif name[index-1] in digits and name[index+1] not in digits:
                     new_name += ', '
 
                 else:
