@@ -57,6 +57,8 @@ def fix_name(name: str) -> str:
             if name[index] == ',':
                 if name[index+1] in ascii_letters or name[index+1] in digits:
                     new_name += ', '
+                else:
+                    new_name += name[index]
             else:
                 new_name += name[index]
         index += 1
@@ -107,17 +109,27 @@ while True:
 
            amount_of_players = tournament.find("ns:max_table_players", ns).text
 
-           for hyper_string, turbo_string, slow_string in zip(HYPER, TURBO, SLOW):
+           speed = None
+
+           for hyper_string in HYPER:
                if hyper_string in name:
                    speed = 'HYPER'
                    break
-               if turbo_string in name:
-                   speed = 'TURBO'
-                   break
-               if slow_string in name:
-                   speed = 'SLOW'
-                   break
-           else:
+
+           # Если в первом цикле ничего не найдено, проверяем TURBO
+           if speed is None:
+               for turbo_string in TURBO:
+                   if turbo_string in name:
+                       speed = 'TURBO'
+                       break
+
+           # Если и в TURBO ничего не найдено, проверяем SLOW
+           if speed is None:
+               for slow_string in SLOW:
+                   if slow_string in name:
+                       speed = 'SLOW'
+                       break
+           if speed is None:
                speed = 'REG'
            if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
                continue
