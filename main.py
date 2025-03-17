@@ -55,13 +55,7 @@ def fix_name(name: str) -> str:
     for _ in range(len(name)):
         if index + 1 <= len(name) <= index - 1:
             if name[index] == ',':
-                if name[index+1] in ascii_letters:
-                    new_name += ', '
-
-                elif name[index+1] in digits and name[index-1] not in digits:
-                    new_name += ', '
-
-                elif name[index-1] in digits and name[index+1] not in digits:
+                if name[index+1] in ascii_letters or name[index+1] in digits:
                     new_name += ', '
 
                 else:
