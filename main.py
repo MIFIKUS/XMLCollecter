@@ -67,6 +67,11 @@ def fix_name(name: str) -> str:
     return new_name
 
 
+def fix_comma_in_db():
+    query = "UPDATE xml SET name = REPLACE(NAME, '$1, 050', '$1,050');"
+    cursor = get_cursor()
+    cursor.execute(query)
+
 
 while True:
    try:
@@ -160,6 +165,7 @@ while True:
                add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date)
        print('Турниры кончились')
        time.sleep(900)
+       fix_comma_in_db()
    except Exception as e:
        time.sleep(10)
        print(e)
