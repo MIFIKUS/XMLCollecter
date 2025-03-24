@@ -73,6 +73,8 @@ def fix_comma_in_db():
     cursor.execute(query)
 
 
+tournaments_to_load = []
+
 while True:
    try:
        xml = get_xml()
@@ -161,11 +163,17 @@ while True:
            name = fix_name(name)
            print(output)
 
-           if not is_there_tournament(tournament_id):
-               add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date)
+           tournaments_to_load.append((tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date))
+
+           for i in tournaments_to_load:
+                tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date = i
+                if not is_there_tournament(tournament_id):
+                    add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date)
+
        print('Турниры кончились')
        time.sleep(900)
        fix_comma_in_db()
+       tournaments_to_load = []
    except Exception as e:
        time.sleep(10)
        print(e)
