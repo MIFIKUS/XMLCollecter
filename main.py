@@ -171,9 +171,9 @@ while True:
                     add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date)
 
        print('Турниры кончились')
-       time.sleep(900)
        fix_comma_in_db()
        tournaments_to_load = []
+       time.sleep(900)
    except Exception as e:
        time.sleep(10)
        print(e)
