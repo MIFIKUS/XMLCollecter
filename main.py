@@ -68,7 +68,7 @@ def fix_name(name: str) -> str:
 
 
 def fix_comma_in_db():
-    query = "UPDATE xml SET name = REPLACE(NAME, '$1, 050', '$1,050');"
+    query = "UPDATE poker.xml SET name = REPLACE(NAME, '$1, 050', '$1,050');"
     cursor = get_cursor()
     cursor.execute(query)
 
