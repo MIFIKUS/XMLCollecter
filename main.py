@@ -143,7 +143,7 @@ while True:
                continue
            if 'mystery' in name.lower() or 'Lotus' in name:
                tournament_type = 'MYSTERY'
-           elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name:
+           elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name or "Saturday KO" in name or "Mini Sunday Million" in name:
                tournament_type = 'KO'
            else:
                tournament_type = 'FREEZE'
