@@ -94,7 +94,11 @@ while True:
                continue
            tournament_id = tournament.attrib['id']
            name = tournament.find("ns:name", ns).text
-           gtd = '$' + str(name.replace(' ', '').split(',$')[-1].split('Gtd')[0])
+           try:
+                gtd = '$' + str(name.replace(' ', '').split(',$')[-1].split('Gtd')[0])
+           except:
+                gtd = '0'
+
            name = name.split(', $')
            if len(name) > 1:
                name = ', $'.join(name[:-1])
