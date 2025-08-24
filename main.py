@@ -45,7 +45,7 @@ def add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_pla
 def get_xml() -> str:
     """Получает XML с сайта"""
     url = 'https://www.pokerstars.net/datafeed_global/tournaments/all.xml'
-    return requests.get(url, headers=HEADERS).text
+    return requests.get(url, headers=HEADERS, verify=False).text
 
 
 def fix_name(name: str) -> str:
