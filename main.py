@@ -13,7 +13,7 @@ connection = None
 HEADERS = {'accept-language': 'ru-RU,ru;q=0.9'}
 
 HYPER = ('Hyper', 'Bounty Adrenaline')
-TURBO = ('Turbo', 'Hot', 'Hotter', 'Fast', 'The Sprint')
+TURBO = ('Turbo', 'Hot', 'Hotter', 'Fast', 'The Sprint', 'Friday Rounder', 'Mystery Bounty $5.50')
 SLOW =  ('Titans', 'The Sunday Marathon', 'Marathon')
 
 
@@ -74,6 +74,19 @@ def fix_comma_in_db():
     query = "UPDATE poker.xml SET name = REPLACE(NAME, '$1, 050', '$1,050');"
     cursor = get_cursor()
     cursor.execute(query)
+
+
+def fix_number_commas_in_db():
+    """Исправляет запятые в числовых значениях (убирает пробелы после запятых)"""
+    queries = [
+        "UPDATE poker.xml SET name = REPLACE(NAME, ', 000', ',000');",
+        "UPDATE poker.xml SET name = REPLACE(NAME, ', 100', ',100');",
+        "UPDATE poker.xml SET name = REPLACE(NAME, ', 200', ',200');",
+        "UPDATE poker.xml SET name = REPLACE(name, ', 300', ',300');"
+    ]
+    cursor = get_cursor()
+    for query in queries:
+        cursor.execute(query)
 
 
 tournaments_to_load = []
@@ -146,8 +159,8 @@ while True:
                        break
            if speed is None:
                speed = 'REG'
-           if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
-               continue
+           #if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
+           #    continue
            if 'mystery' in name.lower() or 'Lotus' in name:
                tournament_type = 'MYSTERY'
            elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name or "Saturday KO" in name or "Mini Sunday Million" in name or 'Thursday Thrill' in name:
@@ -179,6 +192,7 @@ while True:
 
        print('Турниры кончились')
        fix_comma_in_db()
+       fix_number_commas_in_db()
        tournaments_to_load = []
        time.sleep(900)
    except Exception as e:
