@@ -1,3 +1,6 @@
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.SNIMissingWarning)
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import xml.etree.ElementTree as ET
 import mysql.connector
 import requests
@@ -10,7 +13,7 @@ connection = None
 HEADERS = {'accept-language': 'ru-RU,ru;q=0.9'}
 
 HYPER = ('Hyper', 'Bounty Adrenaline')
-TURBO = ('Turbo', 'Hot', 'Hotter', 'Fast', 'The Sprint', 'Friday Rounder')
+TURBO = ('Turbo', 'Hot', 'Hotter', 'Fast', 'The Sprint', 'Friday Rounder', 'Mystery Bounty $5.50')
 SLOW =  ('Titans', 'The Sunday Marathon', 'Marathon')
 
 
@@ -45,7 +48,7 @@ def add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_pla
 def get_xml() -> str:
     """Получает XML с сайта"""
     url = 'https://www.pokerstars.net/datafeed_global/tournaments/all.xml'
-    return requests.get(url, headers=HEADERS).text
+    return requests.get(url, headers=HEADERS, verify=False).text
 
 
 def fix_name(name: str) -> str:
@@ -71,6 +74,19 @@ def fix_comma_in_db():
     query = "UPDATE poker.xml SET name = REPLACE(NAME, '$1, 050', '$1,050');"
     cursor = get_cursor()
     cursor.execute(query)
+
+
+def fix_number_commas_in_db():
+    """Исправляет запятые в числовых значениях (убирает пробелы после запятых)"""
+    queries = [
+        "UPDATE poker.xml SET name = REPLACE(NAME, ', 000', ',000');",
+        "UPDATE poker.xml SET name = REPLACE(NAME, ', 100', ',100');",
+        "UPDATE poker.xml SET name = REPLACE(NAME, ', 200', ',200');",
+        "UPDATE poker.xml SET name = REPLACE(name, ', 300', ',300');"
+    ]
+    cursor = get_cursor()
+    for query in queries:
+        cursor.execute(query)
 
 
 tournaments_to_load = []
@@ -136,22 +152,22 @@ while True:
                             speed = 'TURBO'
                             break
 
-                # Если и в TURBO ничего не найдено, проверяем SLOW
-                if speed is None:
-                    for slow_string in SLOW:
-                        if slow_string in name:
-                            speed = 'SLOW'
-                            break
-                if speed is None:
-                    speed = 'REG'
-                #if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
-                #    continue
-                if 'mystery' in name.lower() or 'Lotus' in name:
-                    tournament_type = 'MYSTERY'
-                elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name or "Saturday KO" in name or "Mini Sunday Million" in name or 'Thursday Thrill' in name:
-                    tournament_type = 'KO'
-                else:
-                    tournament_type = 'FREEZE'
+           # Если и в TURBO ничего не найдено, проверяем SLOW
+           if speed is None:
+               for slow_string in SLOW:
+                   if slow_string in name:
+                       speed = 'SLOW'
+                       break
+           if speed is None:
+               speed = 'REG'
+           #if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
+           #    continue
+           if 'mystery' in name.lower() or 'Lotus' in name:
+               tournament_type = 'MYSTERY'
+           elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name or "Saturday KO" in name or "Mini Sunday Million" in name or 'Thursday Thrill' in name:
+               tournament_type = 'KO'
+           else:
+               tournament_type = 'FREEZE'
 
                 output = (
                     f"Tournament ID: {tournament_id}\n"
@@ -179,6 +195,7 @@ while True:
                 pass
        print('Турниры кончились')
        fix_comma_in_db()
+       fix_number_commas_in_db()
        tournaments_to_load = []
        time.sleep(900)
    except Exception as e:
