@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import mysql.connector
 import requests
 import time
+import traceback
 from string import ascii_letters, digits
 
 
@@ -189,7 +190,7 @@ while True:
                          add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date)
 
             except Exception as e:
-                print(e)
+                traceback.print_exc()
        print('Турниры кончились')
        fix_comma_in_db()
        fix_number_commas_in_db()
