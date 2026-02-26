@@ -188,8 +188,8 @@ while True:
                      if not is_there_tournament(tournament_id):
                          add_tournament(tournament_id, name, gtd, buy_in, total_buy_in, amount_of_players, speed, tournament_type, date)
 
-            except:
-                pass
+            except Exception as e:
+                print(e)
        print('Турниры кончились')
        fix_comma_in_db()
        fix_number_commas_in_db()
