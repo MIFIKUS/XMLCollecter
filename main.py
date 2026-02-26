@@ -152,22 +152,22 @@ while True:
                             speed = 'TURBO'
                             break
 
-           # Если и в TURBO ничего не найдено, проверяем SLOW
-           if speed is None:
-               for slow_string in SLOW:
-                   if slow_string in name:
-                       speed = 'SLOW'
-                       break
-           if speed is None:
-               speed = 'REG'
-           #if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
-           #    continue
-           if 'mystery' in name.lower() or 'Lotus' in name:
-               tournament_type = 'MYSTERY'
-           elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name or "Saturday KO" in name or "Mini Sunday Million" in name or 'Thursday Thrill' in name:
-               tournament_type = 'KO'
-           else:
-               tournament_type = 'FREEZE'
+                # Если и в TURBO ничего не найдено, проверяем SLOW
+                if speed is None:
+                    for slow_string in SLOW:
+                        if slow_string in name:
+                            speed = 'SLOW'
+                            break
+                if speed is None:
+                    speed = 'REG'
+                #if 'Zoom' in name or 'Seats' in name or 'Phase' in name:
+                #    continue
+                if 'mystery' in name.lower() or 'Lotus' in name:
+                    tournament_type = 'MYSTERY'
+                elif 'Bounty Adrenaline' in name or 'Bounty Builder' in name or 'Pacific Rim' in name or 'Progressive KO' in name or 'Bear Fury' in name or 'Anaconda' in name or "Saturday KO" in name or "Mini Sunday Million" in name or 'Thursday Thrill' in name:
+                    tournament_type = 'KO'
+                else:
+                    tournament_type = 'FREEZE'
 
                 output = (
                     f"Tournament ID: {tournament_id}\n"
