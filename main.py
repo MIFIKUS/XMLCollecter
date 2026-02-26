@@ -92,6 +92,7 @@ tournaments_to_load = []
 while True:
    try:
        xml = get_xml()
+       print(xml)
        root = ET.fromstring(xml)
 
        ns = {"ns": "http://feed.pokerstars.com/TournamentFeed/2007"}
