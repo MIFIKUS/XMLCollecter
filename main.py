@@ -197,5 +197,5 @@ while True:
        tournaments_to_load = []
        time.sleep(900)
    except Exception as e:
-       time.sleep(10)
+       traceback.print_exc()
        print(e)
