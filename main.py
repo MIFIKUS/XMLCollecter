@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import mysql.connector
 import requests
+import re
 import time
 import traceback
 from string import ascii_letters, digits
@@ -13,6 +14,52 @@ HEADERS = {'accept-language': 'ru-RU,ru;q=0.9'}
 HYPER = ('Hyper', 'Bounty Adrenaline')
 TURBO = ('Turbo', 'Hot', 'Hotter', 'Fast', 'The Sprint', 'Friday Rounder', 'Mystery Bounty $5.50')
 SLOW =  ('Titans', 'The Sunday Marathon', 'Marathon')
+
+
+def parse_name_and_gtd_pokerstars(name):
+    """Извлечение названия турнира и гарантии из поля name для PokerStars"""
+    gtd = None
+    processed_name = name
+
+    # Ищем Gtd (может быть с разными вариантами: Gtd, Seat, Seats и т.д.)
+    gtd_pattern = r',\s*([^,]+?)\s+Gtd(?:\s|$|\.|!)'
+    match = re.search(gtd_pattern, name, re.IGNORECASE)
+
+    if match:
+        # Разделяем строку на название и гарантию
+        gtd_text = match.group(1).strip()
+
+        # Находим позицию последней запятой перед гарантией
+        comma_pos = name.rfind(',')
+        if comma_pos != -1:
+            processed_name = name[:comma_pos].strip()
+            gtd = gtd_text
+        else:
+            # Если запятой нет, пытаемся найти любое разделение
+            gtd_start = name.lower().find(gtd_text.lower())
+            if gtd_start != -1:
+                processed_name = name[:gtd_start].strip()
+                if processed_name.endswith(','):
+                    processed_name = processed_name[:-1].strip()
+                gtd = gtd_text
+
+    # Если не нашли через регулярное выражение, пробуем другой подход
+    if gtd is None:
+        # Простой поиск "Gtd" в строке
+        gtd_index = name.upper().find('GTD')
+        if gtd_index != -1:
+            # Ищем запятую перед Gtd
+            comma_pos = name.rfind(',', 0, gtd_index)
+            if comma_pos != -1:
+                processed_name = name[:comma_pos].strip()
+                gtd = name[comma_pos + 1:gtd_index].strip()
+                if gtd.startswith(','):
+                    gtd = gtd[1:].strip()
+
+    # НЕ удаляем запрещенные символы из названия (требование заказчика)
+    # processed_name = remove_invalid_chars(processed_name)
+
+    return processed_name, gtd
 
 
 def get_cursor() -> mysql.connector.connect().cursor:
@@ -109,16 +156,9 @@ while True:
                     continue
                 tournament_id = tournament.attrib['id']
                 name = tournament.find("ns:name", ns).text
-                try:
-                     gtd = '$' + str(name.replace(' ', '').split(',$')[-1].split('Gtd')[0])
-                except:
-                     gtd = '0'
-
-                name = name.split(', $')
-                if len(name) > 1:
-                    name = ', $'.join(name[:-1])
-                else:
-                    name = ''.join(name).replace('  ', '').split(',$')[0]
+                name, gtd = parse_name_and_gtd_pokerstars(name)
+                if gtd is None:
+                    gtd = '0'
 
                 date = tournament.find("ns:start_date", ns).text
                 buy_in = tournament.find("ns:buy_in_fee", ns).text
